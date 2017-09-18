@@ -58,7 +58,7 @@ def insert_score(conn,name,gamemode,bombc,gridsiz,time):
         sql = "INSERT INTO SCORES (USERNAME, GAMEMODE,BOMBS,GRIDSIZE,_TIME) VALUES ('"+str(name)+"','"+str(gamemode)+"',"+str(bombc)+","+str(gridsiz)+","+str(time)+");"
         print(sql)
         c.execute(sql)
-        conn.commmit()
+        conn.commit()
     except Error as e:
         print(e)
 
@@ -89,11 +89,11 @@ def popup_window(wl,time):
     toplevel.focus_force()
     # Lost the Game
     if wl == False:
-        label1=tk.Label(toplevel,text="You Lose! Time Taken: "+str(time) + "seconds.",height=0,width=100)
+        label1=tk.Label(toplevel,text="You Lose! Time Taken: "+str(time) + " seconds.",height=0,width=50)
         label1.pack()
     # Won the Game
     else:
-        label1 = tk.Label(toplevel, text="You Win! Time Taken: " + str(time) + "seconds.", height=0, width=100)
+        label1 = tk.Label(toplevel, text="You Win! Time Taken: " + str(time) + " seconds.", height=0, width=50)
         label1.pack()
 
 
@@ -615,10 +615,19 @@ class HighScores(Page):
         self.scorepanel = tk.Frame(self)
         self.scorepanel.pack(side="top", fill="x", expand=False)
         s = get_scores(conn,gamemode,grids,bombs)
+        labels = []
+        l = tk.Label(self.scorepanel,text="| Ranking | Name | Gamemode | Bombs | Grid Size | Score |",justify="left",anchor="w")
+        l.pack(side="top")
+        labels.append(l)
+        j=0
         for i in s:
             print(i)
-
-        #glabel.pack(side="left")
+            j+=1
+            if(j>10):
+                break
+            l = tk.Label(self.scorepanel,text="| "+str(j)+". | "+str(i[0])+" | "+str(i[1])+" | "+str(i[2])+" | "+str(i[3])+" | "+str(i[4]),justify="left",anchor="w")
+            l.pack(side="top")
+            labels.append(l)
 
 class MainView(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -662,6 +671,8 @@ if __name__ == "__main__":
 
     root = tk.Tk()
     main = MainView(root)
-    main.pack(side="top", fill="both", expand=True)
+    main.pack(side="top", fill="both",expand=True)
+    main.master.title("Minesweeper")
+    main.master.iconbitmap("img/ico/icon.ico")
     root.wm_geometry("400x400")
     root.mainloop()
