@@ -88,23 +88,6 @@ def generate_board_colours(grid):
             if(x < grid-1):
                 if board[y][x+1].get_colour()==board[y][x].get_colour():
                     temp +=1
-
-            if(y > 0 and x > 0):
-                if board[y-1][x-1].get_colour()==board[y][x].get_colour():
-                    temp +=1
-
-            if(y < grid-1 and x < grid-1):
-                if board[y+1][x+1].get_colour()==board[y][x].get_colour():
-                    temp +=1
-
-            if(y < grid -1 and x > 0):
-                if board[y+1][x-1].get_colour()==board[y][x].get_colour():
-                    temp +=1
-
-            if(y > 0 and x < grid -1):
-                if board[y-1][x+1].get_colour()==board[y][x].get_colour():
-                    temp +=1
-
             board[y][x].set_adjacent(temp)
 
 
@@ -134,58 +117,60 @@ def left_click_colours(grid,x,y):
     c = grid[x][y].get_colour();
 
     if grid[y][x].get_covered():
-        if grid[y][x].get_adjacent() > 0:
-            grid[y][x].uncover()
-            # implement game winning code here
 
-        if grid[y][x].get_adjacent() == 0:
-            grid[y][x].uncover()
+        grid[y][x].uncover()
 
-    return check_valid_colours(grid)
+        if y > 0:
+            if not grid[y - 1][x].get_covered():
+                if grid[y][x].get_colour() == grid[y - 1][x].get_colour():
+                    return False
 
-def check_valid_colours(grid):
+        if x > 0:
+            if not grid[y][x - 1].get_covered():
+                if grid[y][x].get_colour() == grid[y][x - 1].get_colour():
+                    return False
+
+        if y < grid_size - 1:
+            if not grid[y + 1][x].get_covered():
+                if grid[y][x].get_colour() == grid[y + 1][x].get_colour():
+                    return False
+
+        if x < grid_size - 1:
+            if not grid[y][x + 1].get_covered():
+                if grid[y][x].get_colour() == grid[y][x + 1].get_colour():
+                   return False
+    return True
+
+def detect_conflicting_spaces(grid):
+
     grid_size = len(grid)
+
+    h=0
+
     for y in range(grid_size):
         for x in range(grid_size):
-            if grid[y][x].get_covered == False:
-                if (y > 0):
-                    if (not (grid[y - 1][x].get_covered())):
-                        if grid[y][x].get_colour == grid[y-1][x].get_colour:
-                            return False
+            if grid[y][x].get_covered() == False:
+                continue
 
-                if (x > 0):
-                    if not (grid[y][x - 1].get_covered()):
-                        if grid[y][x].get_colour == grid[y][x - 1].get_colour:
-                            return False
+            if y > 0:
+                if grid[y][x].get_colour() == grid[y - 1][x].get_colour():
+                    continue
 
-                if (y < grid_size - 1):
-                    if not grid[y + 1][x].get_covered():
-                        if grid[y][x].get_colour == grid[y+1][x].get_colour:
-                            return False
 
-                if (x < grid_size - 1):
-                    if not grid[y][x + 1].get_covered():
-                        if grid[y][x].get_colour == grid[y][x+1].get_colour:
-                            return False
+            if x > 0:
+                if grid[y][x].get_colour() == grid[y][x - 1].get_colour():
+                    continue
 
-                if (y > 0 and x > 0):
-                    if not grid[y - 1][x - 1].get_covered():
-                        if grid[y][x].get_colour == grid[y-1][x-1].get_colour:
-                            return False
 
-                if (y < grid_size - 1 and x < grid_size - 1):
-                    if not grid[y + 1][x + 1].get_covered():
-                        if grid[y][x].get_colour == grid[y+1][x+1].get_colour:
-                            return False
+            if y < grid_size - 1:
+                if grid[y][x].get_colour() == grid[y + 1][x].get_colour():
+                    continue
 
-                if (y < grid_size - 1 and x > 0):
-                    if not grid[y + 1][x - 1].get_covered():
-                        if grid[y][x].get_colour == grid[y+1][x-1].get_colour:
-                            return False
 
-                if (y > 0 and x < grid_size - 1):
-                    if not grid[y - 1][x + 1].get_covered():
-                        if grid[y][x].get_colour == grid[y-1][x+1].get_colour:
-                            return False
+            if x < grid_size - 1:
+                if grid[y][x].get_colour() == grid[y][x + 1].get_colour():
+                    continue
 
-    return True
+            h+=1
+
+    return h

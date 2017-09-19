@@ -547,8 +547,8 @@ class Colours(Page):
        self.load_game_board()
        if self.bombsrem == 0:
            print("Checking solution...")
-           sol = ms.check_solution(self.game)
-           if sol:
+           sol = cs.detect_conflicting_spaces(self.game)
+           if sol == 0:
                print("Solution reached!")
                gwlabel = tk.Label(self.gamewindow, text="You Win!")
                gwlabel.pack(side="left", fill="x", expand=True)
@@ -558,10 +558,11 @@ class Colours(Page):
 
    def handle_left_click(self, window, j, i):
        print('Calling for', j, i)
-       bomb = cs.left_click_colours(self.game, j, i)
+       state = cs.left_click_colours(self.game, j, i)
 
-       if bomb == -1:
-           self.gameover(j, i)
+       if state == False:
+           self.gameover(j,i)
+
        self.reload_game_board()
 
    def handle_right_click(self, window, j, i):
