@@ -215,8 +215,8 @@ class Vanilla(Page):
                templabel.image= temp
                self.sprite_grid[(i,j)]=templabel
                w.create_image((i*16)+10,(j*16)+10+32,image=temp,tags="("+str(i)+","+str(j)+")")
-               w.tag_bind("("+str(i)+","+str(j)+")",'<ButtonPress-1>',lambda gw = self.gamewindow,s_j=j,s_i=i: self.handle_left_click(gw,s_j,s_i))
-               w.tag_bind("("+str(i)+","+str(j)+")",'<ButtonPress-3>',lambda gw = self.gamewindow,s_j=j,s_i=i: self.handle_right_click(gw,s_j,s_i))
+               w.tag_bind("("+str(i)+","+str(j)+")",'<ButtonPress-1>',lambda gw = self.gamewindow,s_j=j,s_i=i: self.handle_left_click(s_j,s_i))
+               w.tag_bind("("+str(i)+","+str(j)+")",'<ButtonPress-3>',lambda gw = self.gamewindow,s_j=j,s_i=i: self.handle_right_click(s_j,s_i))
                pass
        w.pack()
        self.gamewindow.pack(side="left",fill="x",expand=True)
@@ -236,7 +236,7 @@ class Vanilla(Page):
                popup_window(True, time)
                insert_score(conn, "PLAYER", "Vanilla", self.bombc,self.gridsiz, time)
 
-   def handle_left_click(self,window,j,i):
+   def handle_left_click(self,j,i):
        print('Calling for',j,i)
        bomb = ms.left_click(self.game,j,i)
 
@@ -244,7 +244,7 @@ class Vanilla(Page):
             self.gameover(j,i)
        self.reload_game_board()
 
-   def handle_right_click(self,window,j,i):
+   def handle_right_click(self,j,i):
        self.bombsrem += ms.right_click(self.game,self.bombsrem,j,i)
        self.reload_game_board()
 
@@ -385,10 +385,10 @@ class Hexagon(Page):
                w.create_image((i * 16) + 10+(r*8), (j * 12)+ 10 + 32, image=temp, tags="(" + str(i) + "," + str(j) + ")")
 
                w.tag_bind("(" + str(i) + "," + str(j) + ")", '<ButtonPress-1>',
-                          lambda gw=self.gamewindow, s_j=j, s_i=i: self.handle_left_click(gw, s_j, s_i))
+                          lambda gw=self.gamewindow, s_j=j, s_i=i: self.handle_left_click(s_j, s_i))
 
                w.tag_bind("(" + str(i) + "," + str(j) + ")", '<ButtonPress-3>',
-                          lambda gw=self.gamewindow, s_j=j, s_i=i: self.handle_right_click(gw, s_j, s_i))
+                          lambda gw=self.gamewindow, s_j=j, s_i=i: self.handle_right_click(s_j, s_i))
 
                if (r == 0):
                    r = 1
@@ -412,7 +412,7 @@ class Hexagon(Page):
                popup_window(True, time)
                insert_score(conn, "PLAYER", "Hexagon", self.bombc,self.gridsiz, time)
 
-   def handle_left_click(self, window, j, i):
+   def handle_left_click(self,j,i):
        print('Calling for', j, i)
        bomb = ms.left_click_hex(self.game, j, i)
 
@@ -420,11 +420,11 @@ class Hexagon(Page):
            self.gameover(j, i)
        self.reload_game_board()
 
-   def handle_right_click(self, window, j, i):
+   def handle_right_click(self,j,i):
        self.bombsrem += ms.right_click(self.game, self.bombsrem, j, i)
        self.reload_game_board()
 
-   def gameover(self, j, i):
+   def gameover(self,j,i):
        self.game[i][j].set_triggered()
        for y in self.game:
            for x in y:
@@ -534,9 +534,9 @@ class Colours(Page):
                self.sprite_grid[(i, j)] = templabel
                w.create_image((i * 16) + 10, (j * 16) + 10 + 32, image=temp, tags="(" + str(i) + "," + str(j) + ")")
                w.tag_bind("(" + str(i) + "," + str(j) + ")", '<ButtonPress-1>',
-                          lambda gw=self.gamewindow, s_j=j, s_i=i: self.handle_left_click(gw, s_j, s_i))
+                          lambda gw=self.gamewindow, s_j=j, s_i=i: self.handle_left_click(s_j, s_i))
                w.tag_bind("(" + str(i) + "," + str(j) + ")", '<ButtonPress-3>',
-                          lambda gw=self.gamewindow, s_j=j, s_i=i: self.handle_right_click(gw, s_j, s_i))
+                          lambda gw=self.gamewindow, s_j=j, s_i=i: self.handle_right_click(s_j, s_i))
                pass
        w.pack()
        self.gamewindow.pack(side="left", fill="x", expand=True)
@@ -556,7 +556,7 @@ class Colours(Page):
                popup_window(True, time)
                insert_score(conn,"PLAYER", "Colours",0,self.gridsiz, time)
 
-   def handle_left_click(self, window, j, i):
+   def handle_left_click(self, j, i):
        print('Calling for', j, i)
        state = cs.left_click_colours(self.game, j, i)
 
@@ -565,7 +565,7 @@ class Colours(Page):
 
        self.reload_game_board()
 
-   def handle_right_click(self, window, j, i):
+   def handle_right_click(self, j, i):
        self.bombsrem += cs.right_click_colours(self.game, self.bombsrem, j, i)
        self.reload_game_board()
 
