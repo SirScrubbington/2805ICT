@@ -50,8 +50,8 @@ class colour_square():
         if self.get_flagged():
             return "F"
 
-        if self.get_covered():
-            return " "
+       #if self.get_covered():
+            #return " "
 
         return str(self.get_adjacent())
 
@@ -60,8 +60,8 @@ class colour_square():
         if self.get_flagged():
             return "F"
 
-        if self.get_covered():
-            return " "
+        #if self.get_covered():
+            #return " "
 
         return str(self.get_adjacent())
 
@@ -90,6 +90,8 @@ def generate_board_colours(grid):
                     temp +=1
             board[y][x].set_adjacent(temp)
 
+    for y in board:
+        print(y)
 
     return board
 
@@ -155,22 +157,31 @@ def detect_conflicting_spaces(grid):
             if y > 0:
                 if grid[y][x].get_colour() == grid[y - 1][x].get_colour():
                     continue
+                else:
+                    h += 1
+                    continue
 
 
             if x > 0:
                 if grid[y][x].get_colour() == grid[y][x - 1].get_colour():
+                    continue
+                else:
+                    h += 1
                     continue
 
 
             if y < grid_size - 1:
                 if grid[y][x].get_colour() == grid[y + 1][x].get_colour():
                     continue
-
+                else:
+                    h += 1
+                    continue
 
             if x < grid_size - 1:
                 if grid[y][x].get_colour() == grid[y][x + 1].get_colour():
                     continue
-
-            h+=1
+                else:
+                    h += 1
+                    continue
 
     return h

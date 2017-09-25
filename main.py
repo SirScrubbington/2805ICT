@@ -7,7 +7,6 @@ from sqlite3 import Error
 import pytz
 import calendar
 import datetime
-
 conn = None
 bomb = 10
 grid = 9
@@ -62,39 +61,15 @@ def insert_score(conn,name,gamemode,bombc,gridsiz,time):
     except Error as e:
         print(e)
 
-def insert_row(conn,table,data):
-     try:
-         c = conn.cursor()
-
-         sql = "INSERT INTO "+table+" VALUES ("
-
-         for i in range(0,len(data)):
-             if(i > 0):
-                sql += ","
-             if(isinstance(data[i],str)):
-                 temp = data[i].replace("'","’")
-                 sql +="'"+temp+"'"
-             else:
-                 sql +=str(data[i])
-         sql+=");"
-         print(sql)
-         c.execute(sql)
-         conn.commit()
-     except Error as e:
-         print(sql)
-         print(e)
-
-def popup_window(wl,time):
+def popup_window(lbl,time=None,):
     toplevel = tk.Toplevel()
     toplevel.focus_force()
     # Lost the Game
-    if wl == False:
-        label1=tk.Label(toplevel,text="You Lose! Time Taken: "+str(time) + " seconds.",height=0,width=50)
-        label1.pack()
-    # Won the Game
-    else:
-        label1 = tk.Label(toplevel, text="You Win! Time Taken: " + str(time) + " seconds.", height=0, width=50)
-        label1.pack()
+    msg = lbl
+    if time != None:
+        msg += " Time Taken: " + str(time) + " seconds."
+    label1 = tk.Label(toplevel, text=msg, height=0, width=50)
+    label1.pack()
 
 
 class Page(tk.Frame):
@@ -233,7 +208,7 @@ class Vanilla(Page):
                gwlabel=tk.Label(self.gamewindow,text="You Win!")
                gwlabel.pack(side="left",fill="x",expand=True)
                time = self.get_time()
-               popup_window(True, time)
+               popup_window("You win!", time)
                insert_score(conn, "PLAYER", "Vanilla", self.bombc,self.gridsiz, time)
 
    def handle_left_click(self,j,i):
@@ -258,7 +233,7 @@ class Vanilla(Page):
                x.uncover()
 
        time = self.get_time()
-       popup_window(False,time)
+       popup_window("You Lose!",time)
        print(time)
 
 class Hexagon(Page):
@@ -409,7 +384,7 @@ class Hexagon(Page):
                gwlabel = tk.Label(self.gamewindow, text="You Win!")
                gwlabel.pack(side="left", fill="x", expand=True)
                time = self.get_time()
-               popup_window(True, time)
+               popup_window("You Win!", time)
                insert_score(conn, "PLAYER", "Hexagon", self.bombc,self.gridsiz, time)
 
    def handle_left_click(self,j,i):
@@ -432,7 +407,7 @@ class Hexagon(Page):
                    x.set_flagged()
                x.uncover()
        time = self.get_time()
-       popup_window(False, time)
+       popup_window("You Lose!", time)
        print(time)
 
 class Colours(Page):
@@ -444,9 +419,6 @@ class Colours(Page):
    def get_time(self):
        finaltime = time.time() - self.timer
        return finaltime
-
-   def __init__(self, *args, **kwargs):
-       Page.__init__(self, *args, **kwargs)
 
    def decide_sprite(self, y, x):
        dir = "img/gif/"
@@ -501,9 +473,9 @@ class Colours(Page):
        interface = tk.Frame(self)
        interface.pack(side="top", fill="x", expand=False)
 
-       self.bombsrem = bomb
-
        self.gridsiz = grid
+
+       self.bombsrem = cs.detect_conflicting_spaces(self.game)
 
        self.load_game_board()
 
@@ -553,7 +525,7 @@ class Colours(Page):
                gwlabel = tk.Label(self.gamewindow, text="You Win!")
                gwlabel.pack(side="left", fill="x", expand=True)
                time = self.get_time()
-               popup_window(True, time)
+               popup_window("You Win!", time)
                insert_score(conn,"PLAYER", "Colours",0,self.gridsiz, time)
 
    def handle_left_click(self, j, i):
@@ -577,7 +549,7 @@ class Colours(Page):
                    x.set_flagged()
                x.uncover()
        time = self.get_time()
-       popup_window(False, time)
+       popup_window("You Lose!", time)
        print(time)
 
 class HighScores(Page):
